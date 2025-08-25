@@ -1,0 +1,38 @@
+# Go build artifacts
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+coverage.out
+bin/
+_build/
+
+# Dependency directories
+# vendor/   # uncomment if you don't commit vendor/
+
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Logs and temp
+*.log
+*.tmp
+
+# IDE/editor
+.vscode/*
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Vim swap
+*.swp
