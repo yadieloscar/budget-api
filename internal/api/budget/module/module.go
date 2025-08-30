@@ -1,3 +1,5 @@
+// Package module wires the budget feature's repository, service, and handlers
+// into the HTTP router.
 package module
 
 import (
@@ -13,12 +15,14 @@ type Module struct {
 	db *sql.DB
 }
 
+// New constructs a budget module with the provided database handle.
 func New(db *sql.DB) *Module {
 	return &Module{
 		db: db,
 	}
 }
 
+// Register registers the budget routes under the given router group.
 func (m *Module) Register(g *gin.RouterGroup) {
 	budgetRepo := repo.NewBudgetRepo(m.db)
 	budgetService := service.NewBudgetService(budgetRepo)

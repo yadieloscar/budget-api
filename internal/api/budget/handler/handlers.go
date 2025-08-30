@@ -1,3 +1,4 @@
+// Package handler contains HTTP handlers for the budget feature.
 package handler
 
 import (
@@ -12,6 +13,7 @@ type BudgetHandler struct {
 	svc service.BudgetService
 }
 
+// NewBudgetHandler returns a handler bound to a BudgetService.
 func NewBudgetHandler(svc service.BudgetService) *BudgetHandler {
 	return &BudgetHandler{svc: svc}
 }

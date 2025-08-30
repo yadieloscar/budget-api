@@ -1,3 +1,4 @@
+// Package middleware contains cross-cutting HTTP middleware for the API.
 package middleware
 
 import (
@@ -6,7 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// CORSMiddleware handles CORS requests
+// CORSMiddleware handles CORS requests for development and simple clients.
+// Consider restricting origins, headers, and methods in production.
 func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")

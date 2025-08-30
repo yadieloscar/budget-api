@@ -1,3 +1,4 @@
+// Package repo provides persistence for budget entities.
 package repo
 
 import (
@@ -13,20 +14,24 @@ var (
 	ErrBudgetNotFound = errors.New("Budget not found")
 )
 
+// BudgetRepository defines persistence operations for budgets.
 type BudgetRepository interface {
 	// CreateBudget creates a new budget entry in the repository
 	CreateBudget(ctx context.Context, budgetInput model.CreateBudgetRequest) (model.Budget, error)
 	GetBudgetByID(ctx context.Context, id string) (model.Budget, error)
 }
 
+// postgresBudgetRepo implements BudgetRepository using a PostgreSQL database.
 type postgresBudgetRepo struct {
 	db *sql.DB // Assuming you have a database connection
 }
 
+// NewBudgetRepo constructs a PostgreSQL-backed budget repository.
 func NewBudgetRepo(db *sql.DB) BudgetRepository {
 	return &postgresBudgetRepo{db: db}
 }
 
+// CreateBudget inserts a budget row and returns the created entity.
 func (r *postgresBudgetRepo) CreateBudget(ctx context.Context, budgetInput model.CreateBudgetRequest) (model.Budget, error) {
 	query := `
         INSERT INTO budgets (
@@ -75,6 +80,7 @@ func (r *postgresBudgetRepo) CreateBudget(ctx context.Context, budgetInput model
 	}, nil
 }
 
+// GetBudgetByID loads a budget by its identifier.
 func (r *postgresBudgetRepo) GetBudgetByID(ctx context.Context, id string) (model.Budget, error) {
 	query := `
 		SELECT id, user_id, name, month, status, available_cents, total_amount_cents, currency, created_at, updated_at

@@ -1,15 +1,19 @@
+// Package model defines domain models and request payloads for the budget feature.
 package model
 
 import "time"
 
+// BudgetStatus represents the lifecycle of a budget.
 type BudgetStatus string
 
+// Supported budget statuses.
 const (
 	StatusActive   BudgetStatus = "active"
 	StatusInactive BudgetStatus = "inactive"
 	StatusArchived BudgetStatus = "archived"
 )
 
+// Budget represents an allocation of funds for a user and month.
 type Budget struct {
 	ID               string       `json:"id"`
 	UserID           string       `json:"user_id"`
@@ -23,6 +27,7 @@ type Budget struct {
 	UpdatedAt        time.Time    `json:"updated_at"`
 }
 
+// CreateBudgetRequest is the input payload to create a budget.
 type CreateBudgetRequest struct {
 	UserID           string `json:"user_id" binding:"required"`
 	Name             string `json:"name" binding:"required"`

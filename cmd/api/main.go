@@ -1,3 +1,5 @@
+// Package main provides the entrypoint for the Budget API service.
+// It wires configuration, database connectivity, and HTTP routing.
 package main
 
 import (
@@ -12,6 +14,9 @@ import (
 )
 
 func main() {
+    // main bootstraps the application by loading environment variables,
+    // opening a PostgreSQL connection, building the Gin router, and starting
+    // the HTTP server. See README for required env vars.
 	if err := godotenv.Load(); err != nil {
 		log.Println("no .env file found")
 	}

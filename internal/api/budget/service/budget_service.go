@@ -1,3 +1,4 @@
+// Package service contains business logic for the budget feature.
 package service
 
 import (
@@ -12,6 +13,7 @@ var (
 	ErrInvalidAmount = errors.New("Invalid amount provided. Total amount must be greater than zero")
 )
 
+// BudgetService defines business operations for budgets.
 type BudgetService interface {
 	CreateBudget(ctx context.Context, budgetInput model.CreateBudgetRequest) (*model.Budget, error)
 	GetBudget(ctx context.Context, budgetID string) (*model.Budget, error)
@@ -21,7 +23,7 @@ type svc struct {
 	repo repo.BudgetRepository
 }
 
-// NewBudgetService creates a new instance of BudgetService
+// NewBudgetService creates a new instance of BudgetService.
 func NewBudgetService(r repo.BudgetRepository) BudgetService {
 	return &svc{repo: r}
 }
