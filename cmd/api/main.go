@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
-	"github.com/yadieloscar/budget-api/internal/api"
+	"github.com/yadieloscar/budget-api/internal/handlers"
 
 	_ "github.com/lib/pq" // PostgreSQL driver
 )
@@ -41,7 +41,7 @@ func main() {
 		log.Fatalf("Failed to connect to DB: %v", err)
 	}
 
-	r := api.SetupRouter(db)
+	r := handlers.SetupRouter(db)
 
 	r.Run() // listen and serve on 0.0.0.0:8080
 }

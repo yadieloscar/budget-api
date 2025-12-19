@@ -1,12 +1,12 @@
-// Package service contains business logic for the budget feature.
-package service
+// Package services contains business logic for the budget API.
+package services
 
 import (
 	"context"
 	"errors"
 
-	"github.com/yadieloscar/budget-api/internal/api/budget/model"
-	"github.com/yadieloscar/budget-api/internal/api/budget/repo"
+	"github.com/yadieloscar/budget-api/internal/models"
+	"github.com/yadieloscar/budget-api/internal/repo"
 )
 
 var (
@@ -15,20 +15,20 @@ var (
 
 // BudgetService defines business operations for budgets.
 type BudgetService interface {
-	CreateBudget(ctx context.Context, budgetInput model.CreateBudgetRequest) (*model.Budget, error)
-	GetBudget(ctx context.Context, budgetID string) (*model.Budget, error)
+	CreateBudget(ctx context.Context, budgetInput models.CreateBudgetRequest) (*models.Budget, error)
+	GetBudget(ctx context.Context, budgetID string) (*models.Budget, error)
 }
 
-type svc struct {
+type budgetSvc struct {
 	repo repo.BudgetRepository
 }
 
 // NewBudgetService creates a new instance of BudgetService.
 func NewBudgetService(r repo.BudgetRepository) BudgetService {
-	return &svc{repo: r}
+	return &budgetSvc{repo: r}
 }
 
-func (s *svc) CreateBudget(ctx context.Context, budgetInput model.CreateBudgetRequest) (*model.Budget, error) {
+func (s *budgetSvc) CreateBudget(ctx context.Context, budgetInput models.CreateBudgetRequest) (*models.Budget, error) {
 
 	if budgetInput.TotalAmountCents <= 0 {
 		return nil, ErrInvalidAmount
@@ -37,7 +37,7 @@ func (s *svc) CreateBudget(ctx context.Context, budgetInput model.CreateBudgetRe
 	if err != nil {
 		return nil, err
 	}
-	return &model.Budget{
+	return &models.Budget{
 		ID:               created.ID,
 		UserID:           created.UserID,
 		Name:             created.Name,
@@ -52,12 +52,12 @@ func (s *svc) CreateBudget(ctx context.Context, budgetInput model.CreateBudgetRe
 
 }
 
-func (s *svc) GetBudget(ctx context.Context, budgetID string) (*model.Budget, error) {
+func (s *budgetSvc) GetBudget(ctx context.Context, budgetID string) (*models.Budget, error) {
 	budget, err := s.repo.GetBudgetByID(ctx, budgetID)
 	if err != nil {
 		return nil, err
 	}
-	return &model.Budget{
+	return &models.Budget{
 		ID:               budget.ID,
 		UserID:           budget.UserID,
 		Name:             budget.Name,

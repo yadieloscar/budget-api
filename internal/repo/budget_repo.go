@@ -1,4 +1,4 @@
-// Package repo provides persistence for budget entities.
+// Package repo provides persistence for entities.
 package repo
 
 import (
@@ -7,7 +7,7 @@ import (
 	"errors"
 	"time"
 
-	"github.com/yadieloscar/budget-api/internal/api/budget/model"
+	"github.com/yadieloscar/budget-api/internal/models"
 )
 
 var (
@@ -17,8 +17,8 @@ var (
 // BudgetRepository defines persistence operations for budgets.
 type BudgetRepository interface {
 	// CreateBudget creates a new budget entry in the repository
-	CreateBudget(ctx context.Context, budgetInput model.CreateBudgetRequest) (model.Budget, error)
-	GetBudgetByID(ctx context.Context, id string) (model.Budget, error)
+	CreateBudget(ctx context.Context, budgetInput models.CreateBudgetRequest) (models.Budget, error)
+	GetBudgetByID(ctx context.Context, id string) (models.Budget, error)
 }
 
 // postgresBudgetRepo implements BudgetRepository using a PostgreSQL database.
@@ -32,7 +32,7 @@ func NewBudgetRepo(db *sql.DB) BudgetRepository {
 }
 
 // CreateBudget inserts a budget row and returns the created entity.
-func (r *postgresBudgetRepo) CreateBudget(ctx context.Context, budgetInput model.CreateBudgetRequest) (model.Budget, error) {
+func (r *postgresBudgetRepo) CreateBudget(ctx context.Context, budgetInput models.CreateBudgetRequest) (models.Budget, error) {
 	query := `
         INSERT INTO budgets (
             user_id, 
@@ -59,34 +59,34 @@ func (r *postgresBudgetRepo) CreateBudget(ctx context.Context, budgetInput model
 		budgetInput.TotalAmountCents,
 		budgetInput.Currency,
 		budgetInput.Month,
-		string(model.StatusActive),   // Convert BudgetStatus to string for storage
+		string(models.StatusActive),  // Convert BudgetStatus to string for storage
 		budgetInput.TotalAmountCents, // Initially, available amount equals total amount
 	).Scan(&id, &status, &createdAt, &updatedAt)
 
 	if err != nil {
-		return model.Budget{}, err
+		return models.Budget{}, err
 	}
-	return model.Budget{
+	return models.Budget{
 		ID:               id,
 		UserID:           budgetInput.UserID,
 		Name:             budgetInput.Name,
 		Month:            budgetInput.Month,
-		Status:           model.BudgetStatus(status), // Convert string back to BudgetStatus
+		Status:           models.BudgetStatus(status), // Convert string back to BudgetStatus
 		AvailableCents:   budgetInput.TotalAmountCents,
 		TotalAmountCents: budgetInput.TotalAmountCents,
 		Currency:         budgetInput.Currency,
-		CreatedAt:        createdAt, // You can set this to the actual created_at timestamp if
-		UpdatedAt:        updatedAt, // Same as above, or you can set it to the
+		CreatedAt:        createdAt,
+		UpdatedAt:        updatedAt,
 	}, nil
 }
 
 // GetBudgetByID loads a budget by its identifier.
-func (r *postgresBudgetRepo) GetBudgetByID(ctx context.Context, id string) (model.Budget, error) {
+func (r *postgresBudgetRepo) GetBudgetByID(ctx context.Context, id string) (models.Budget, error) {
 	query := `
 		SELECT id, user_id, name, month, status, available_cents, total_amount_cents, currency, created_at, updated_at
 		FROM budgets WHERE id = $1`
 
-	var budget model.Budget
+	var budget models.Budget
 	err := r.db.QueryRowContext(ctx, query, id).Scan(
 		&budget.ID,
 		&budget.UserID,
@@ -102,10 +102,10 @@ func (r *postgresBudgetRepo) GetBudgetByID(ctx context.Context, id string) (mode
 
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return model.Budget{}, ErrBudgetNotFound
+			return models.Budget{}, ErrBudgetNotFound
 		}
-		return model.Budget{}, err
+		return models.Budget{}, err
 	}
-	budget.Status = model.BudgetStatus(budget.Status) // Convert string back to BudgetStatus
+	budget.Status = models.BudgetStatus(budget.Status) // Convert string back to BudgetStatus
 	return budget, nil
 }
