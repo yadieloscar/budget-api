@@ -6,27 +6,25 @@ description: Guidelines for AI agents working on the budget-api Go project
 
 ## Project Overview
 
-This is a Go-based REST API for budget management, following a layered architecture.
+This is a Go-based REST API for budget management, following a feature-module architecture.
 
 ## Directory Structure
 
 - `cmd/api/main.go` - Application entry point
-- `internal/handlers/` - HTTP handlers and routing (Gin)
-- `internal/services/` - Business logic layer
-- `internal/repo/` - Database persistence (DAO layer)
-- `internal/models/` - Domain models and DTOs
-- `internal/middleware/` - HTTP middleware
+- `internal/api/` - API layer with router and middleware
+- `internal/api/<feature>/` - Feature modules (handler, service, repo, model, module)
 - `configs/` - Viper configuration helpers
 - `db_docker/` - Docker Compose for local Postgres
 - `docs/` - Project documentation
 
 ## Key Conventions
 
-1. **Layered Architecture**:
-   - `handlers/` - HTTP adapters, route registration
-   - `services/` - Business logic
+1. **Feature Module Pattern**: Each feature has:
+   - `handler/` - HTTP adapters (Gin handlers)
+   - `service/` - Business logic
    - `repo/` - Database persistence
-   - `models/` - Domain types
+   - `model/` - Domain models and DTOs
+   - `module/` - Dependency wiring
 
 2. **API Versioning**: Routes mount under `/api/v1`
 
@@ -34,13 +32,15 @@ This is a Go-based REST API for budget management, following a layered architect
 
 ## Common Tasks
 
-### Adding a New Feature
+### Adding a New Feature Module
 
-1. Add model types to `internal/models/`
-2. Add repository interface and implementation to `internal/repo/`
-3. Add service interface and implementation to `internal/services/`
-4. Add handler and route registration to `internal/handlers/`
-5. Wire up in `internal/handlers/routes.go`
+1. Create directory `internal/api/<feature>/`
+2. Add `model/` with request DTOs and domain models
+3. Add `repo/` with SQL persistence layer
+4. Add `service/` with business logic
+5. Add `handler/` with Gin HTTP handlers
+6. Add `module/` to wire dependencies and register routes
+7. Register the module in the main router
 
 ### Running the Application
 
